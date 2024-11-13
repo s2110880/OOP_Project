@@ -67,5 +67,8 @@ class GLM_Bernoulli(GLM):
 
         #calculating log-likelihood
         return np.sum(bernoulli.logpmf(self._y, mu))
+    
+
+#is this going to appear on github(test)?
 
 
