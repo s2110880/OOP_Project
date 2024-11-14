@@ -2,25 +2,27 @@ from scipy.optimize import minimize
 from scipy.stats import norm, bernoulli, poisson
 import numpy as np
 
-class GLM:
+class GLM: #superclass
     def __init__(self, X, y):
         #instanse variables
         self._X = X
         self._y=y
         self._parameters = None
     
-    def llik(self, parameters):
+    def llik(self, parameters): #abstract method
         #this method is for log_liklihood calculation for specific function defined in subclass
         raise NotImplementedError
 
     def negllik(self, parameters):
+        # returns the negative log-likelihood
         return -self.llik(parameters)
     
     def prediction(self, new_X):
+        #makes prediction for new data using parameters
         etha = np.dot(new_X, self._parameters)
         return self.lf(etha)
     
-    def lf(self, etha):
+    def lf(self, etha): #abstract method
         #link function method, which will be individual for each subclass
         raise NotImplementedError
 
@@ -36,7 +38,7 @@ class GLM:
         print(self._parameters)
 
 
-class GLM_Normal(GLM):
+class GLM_Normal(GLM): #subclass of GLM
     #method overrides method created in superclass
     def lf(self, etha):
         #returning link function for Normal distribution
@@ -53,7 +55,7 @@ class GLM_Normal(GLM):
         return np.sum(norm.logpdf(self._y, mu))
 
 
-class GLM_Bernoulli(GLM):
+class GLM_Bernoulli(GLM): #subclass of GLM
     #method overrides method created in superclass
     def lf(self, etha):
         #this here is derived from table 1
@@ -69,6 +71,17 @@ class GLM_Bernoulli(GLM):
         return np.sum(bernoulli.logpmf(self._y, mu))
     
 
-#is this going to appear on github(test)?
+class GLM_Poisson(GLM): #subclass of GLM
+    #method overrides method created in superclass
+    def lf(self, etha):
+        #this here is derived from table 1
+        return np.exp(etha)
+    
+    def llik(self, parameters):
+        etha = np.dot(self._X, parameters)
+        #assigning variable to a link fucntion
+        mu = self.lf(etha)
+        #calculating log-likelihood
+        return np.sum(poisson.logpmf(self._y, mu))
 
 
