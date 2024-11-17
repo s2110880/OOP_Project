@@ -54,5 +54,6 @@ predict = mdl.prediction(X)
 
 print(predict)
 
+#see description for possible commands
 #type python parsing.py --help to see more about the script
 
